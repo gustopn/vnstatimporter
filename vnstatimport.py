@@ -4,12 +4,12 @@ from subprocess import Popen, PIPE
 from json import dumps, loads
 import socket
 
-if __name__ == "__main__":
+def get_statistics():
+  statisticslist = []
   hostname = socket.gethostname()
   vnstat = Popen(["vnstat", "--json"], stdout=PIPE)
   vnstat.wait()
   traffic = loads(vnstat.stdout.read())
-  statisticslist = []
   for interface in traffic['interfaces']:
     daily_traffic = interface['traffic']['day']
     for traffic_of_day in daily_traffic:
@@ -25,5 +25,9 @@ if __name__ == "__main__":
         "if": interface['name'],
         "host" : hostname
       } )
+  return statisticslist
+
+if __name__ == "__main__":
+  statisticslist = get_statistics()
   print(dumps(statisticslist, indent=2))
 
