@@ -15,9 +15,9 @@ if __name__ == "__main__":
     }
     daily_traffic = interface['traffic']['day']
     for traffic_of_day in daily_traffic:
-      date  = traffic_of_day["date"]["year"] + "-"
-      date += traffic_of_day["date"]["month"] + "-"
-      date += traffic_of_day["date"]["day"]
+      date  = str(traffic_of_day["date"]["year"]) + "-"
+      date += str(traffic_of_day["date"]["month"]) + "-"
+      date += str(traffic_of_day["date"]["day"])
       rx = traffic_of_day["rx"]
       tx = traffic_of_day["tx"]
       traffic_dict = {
