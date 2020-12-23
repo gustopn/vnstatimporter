@@ -2,17 +2,15 @@
 
 from subprocess import Popen, PIPE
 from json import dumps, loads
+import socket
 
 if __name__ == "__main__":
+  hostname = socket.gethostname()
   vnstat = Popen(["vnstat", "--json"], stdout=PIPE)
   vnstat.wait()
   traffic = loads(vnstat.stdout.read())
   statisticslist = []
   for interface in traffic['interfaces']:
-    interfacedict = {
-      "name": interface['name'],
-      "traffic": []
-    }
     daily_traffic = interface['traffic']['day']
     for traffic_of_day in daily_traffic:
       date  = str(traffic_of_day["date"]["year"]) + "-"
@@ -20,12 +18,12 @@ if __name__ == "__main__":
       date += str(traffic_of_day["date"]["day"])
       rx = traffic_of_day["rx"]
       tx = traffic_of_day["tx"]
-      traffic_dict = {
+      statisticslist.append( {
         "rx" : rx,
         "tx" : tx,
-        "date" : date
-      }
-      interfacedict["traffic"].append(traffic_dict)
-    statisticslist.append( interfacedict )
+        "date" : date,
+        "if": interface['name'],
+        "host" : hostname
+      } )
   print(dumps(statisticslist, indent=2))
 
