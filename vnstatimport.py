@@ -70,6 +70,14 @@ if __name__ == "__main__":
     ( host, interface, day, tx, rx )
     VALUES ( %s, %s, %s, %s, %s )""").format(sql.Identifier(schema, table))
   for statistics in statisticslist:
+    select_statement = sql.SQL("""SELECT tx, rx FROM {}
+      WHERE host = %s AND interface = %s AND day = %s
+      """).format(sql.Identifier(schema, table))
+    print(cur.execute(select_statement, (
+      statistics["host"],
+      statistics["if"],
+      statistics["date"]
+    )))
     cur.execute(insert_statement, (
       statistics["host"],
       statistics["if"],
@@ -77,8 +85,5 @@ if __name__ == "__main__":
       statistics["tx"],
       statistics["rx"]
      ))
-  select_statement = sql.SQL("SELECT * FROM {}").format(sql.Identifier(schema, table))
-  cur.execute(select_statement)
-  print(cur.fetchall())
   cur.close()
   dbconn.close()
