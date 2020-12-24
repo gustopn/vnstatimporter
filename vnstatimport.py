@@ -66,10 +66,18 @@ if __name__ == "__main__":
   tableconf = configuration["table"].split(".")
   schema = tableconf[0]
   table = tableconf[1]
-  select_statement = sql.SQL("SELECT * FROM {}").format(sql.Identifier(schema, table))
   insert_statement = sql.SQL("""INSERT INTO {}
     ( host, interface, day, tx, rx )
     VALUES ( %s, %s, %s, %s, %s )""").format(sql.Identifier(schema, table))
+  for statistics in statisticslist:
+    cur.execute(insert_statement, (
+      statistics["host"],
+      statistics["if"],
+      statistics["date"],
+      statistics["tx"],
+      statistics["rx"]
+     ))
+  select_statement = sql.SQL("SELECT * FROM {}").format(sql.Identifier(schema, table))
   cur.execute(select_statement)
   print(cur.fetchall())
   cur.close()
