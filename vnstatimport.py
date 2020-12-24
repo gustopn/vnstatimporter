@@ -78,7 +78,8 @@ if __name__ == "__main__":
       statistics["if"],
       statistics["date"]
     ))
-    print(cur.rowcount)
+    if cur.rowcount > 0:
+      continue
     cur.execute(insert_statement, (
       statistics["host"],
       statistics["if"],
