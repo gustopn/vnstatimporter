@@ -2,6 +2,7 @@
 
 from subprocess import Popen, PIPE
 from json import dumps, loads
+from datetime import date
 import socket
 
 def get_statistics():
@@ -13,15 +14,17 @@ def get_statistics():
   for interface in traffic['interfaces']:
     daily_traffic = interface['traffic']['day']
     for traffic_of_day in daily_traffic:
-      date  = str(traffic_of_day["date"]["year"]) + "-"
-      date += str(traffic_of_day["date"]["month"]) + "-"
-      date += str(traffic_of_day["date"]["day"])
+      dateobj = date(
+          traffic_of_day["date"]["year"],
+          traffic_of_day["date"]["month"],
+          traffic_of_day["date"]["day"]
+        )
       rx = traffic_of_day["rx"]
       tx = traffic_of_day["tx"]
       statisticslist.append( {
         "rx" : rx,
         "tx" : tx,
-        "date" : date,
+        "date" : dateobj,
         "if": interface['name'],
         "host" : hostname
       } )
