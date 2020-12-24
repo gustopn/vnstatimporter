@@ -6,6 +6,7 @@ from datetime import date
 import socket
 import os
 import psycopg2
+from psycopg2 import sql
 
 def get_statistics():
   statisticslist = []
@@ -62,7 +63,11 @@ if __name__ == "__main__":
   )
   dbconn.set_session(autocommit=True)
   cur = dbconn.cursor()
-  cur.execute("SELECT * FROM %s", (configuration["table"]))
+  select_statement = sql.SQL("SELECT * FROM {}").format(sql.Identifier(configuration["table"]))
+  insert_statement = sql.SQL("""INSERT INTO {}
+    ( host, interface, day, tx, rx )
+    VALUES ( %s, %s, %s, %s, %s )""").format(sql.Identifier(configuration["table"]))
+  cur.execute(select_statement)
   print(cur.fetchall())
   cur.close()
   dbconn.close()
