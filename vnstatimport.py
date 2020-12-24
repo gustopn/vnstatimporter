@@ -5,6 +5,7 @@ from json import loads, dumps
 from datetime import date
 import socket
 import os
+import psycopg2
 
 def get_statistics():
   statisticslist = []
@@ -45,6 +46,7 @@ def get_configuration():
       configuration = {}
       configuration["dbname"] = input("What is your database name? ")
       configuration["user"] = input("What is your user name? ")
+      configuration["table"] = input("What is your table name? ")
       conf.write(dumps(configuration, indent=2))
       conf.close()
     else:
@@ -54,3 +56,13 @@ def get_configuration():
 if __name__ == "__main__":
   statisticslist = get_statistics()
   configuration = get_configuration()
+  dbconn = psycopg2.connect(
+    dbname=configuration["dbname"],
+    user=configuration["user"]
+  )
+  dbconn.set_session(autocommit=True)
+  cur = dbconn.cursor()
+  cur.execute("SELECT * FROM %s", (configuration["table"]))
+  print(cur.fetchall())
+  cur.close()
+  dbconn.close()
