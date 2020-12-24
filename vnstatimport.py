@@ -12,8 +12,8 @@ def get_statistics():
   statisticslist = []
   hostname = socket.gethostname()
   vnstat = Popen(["vnstat", "--json"], stdout=PIPE)
-  vnstat.wait()
   traffic = loads(vnstat.stdout.read())
+  vnstat.wait()
   for interface in traffic['interfaces']:
     daily_traffic = interface['traffic']['day']
     for traffic_of_day in daily_traffic:
