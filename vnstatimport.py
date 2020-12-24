@@ -63,11 +63,11 @@ if __name__ == "__main__":
   )
   dbconn.set_session(autocommit=True)
   cur = dbconn.cursor()
-  select_statement = sql.SQL("SELECT * FROM {}").format(sql.Identifier(configuration["table"]))
+  select_statement = sql.SQL("SELECT * FROM {}").format(sql.Identifier(configuration["table"].split(".")))
   insert_statement = sql.SQL("""INSERT INTO {}
     ( host, interface, day, tx, rx )
     VALUES ( %s, %s, %s, %s, %s )""").format(sql.Identifier(configuration["table"]))
-  cur.execute(select_statement, (None,None))
+  cur.execute(select_statement)
   print(cur.fetchall())
   cur.close()
   dbconn.close()
