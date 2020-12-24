@@ -73,11 +73,12 @@ if __name__ == "__main__":
     select_statement = sql.SQL("""SELECT tx, rx FROM {}
       WHERE host = %s AND interface = %s AND day = %s
       """).format(sql.Identifier(schema, table))
-    print(cur.execute(select_statement, (
+    cur.execute(select_statement, (
       statistics["host"],
       statistics["if"],
       statistics["date"]
-    )))
+    ))
+    print(cur.rowcount)
     cur.execute(insert_statement, (
       statistics["host"],
       statistics["if"],
