@@ -69,6 +69,8 @@ if __name__ == "__main__":
   insert_statement = sql.SQL("""INSERT INTO {}
     ( host, interface, day, tx, rx )
     VALUES ( %s, %s, %s, %s, %s )""").format(sql.Identifier(schema, table))
+  update_statement = sql.SQL("""UPDATE {} SET tx = %s, rx = %s
+    WHERE host = %s AND interface = %s AND day = %s""").format(sql.Identifier(schema, table))
   for statistics in statisticslist:
     select_statement = sql.SQL("""SELECT tx, rx FROM {}
       WHERE host = %s AND interface = %s AND day = %s
@@ -79,13 +81,20 @@ if __name__ == "__main__":
       statistics["date"]
     ))
     if cur.rowcount > 0:
-      continue
-    cur.execute(insert_statement, (
-      statistics["host"],
-      statistics["if"],
-      statistics["date"],
-      statistics["tx"],
-      statistics["rx"]
-     ))
+      cur.execute(update_statement, (
+        statistics["tx"],
+        statistics["rx"],
+        statistics["host"],
+        statistics["if"],
+        statistics["date"]
+      ))
+    else:
+      cur.execute(insert_statement, (
+        statistics["host"],
+        statistics["if"],
+        statistics["date"],
+        statistics["tx"],
+        statistics["rx"]
+      ))
   cur.close()
   dbconn.close()
