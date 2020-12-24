@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from subprocess import Popen, PIPE
-from json import dumps, loads
+from json import loads
 from datetime import date
 import socket
 
@@ -32,5 +32,3 @@ def get_statistics():
 
 if __name__ == "__main__":
   statisticslist = get_statistics()
-  print(dumps(statisticslist, indent=2))
-
