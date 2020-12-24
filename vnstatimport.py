@@ -67,7 +67,7 @@ if __name__ == "__main__":
   insert_statement = sql.SQL("""INSERT INTO {}
     ( host, interface, day, tx, rx )
     VALUES ( %s, %s, %s, %s, %s )""").format(sql.Identifier(configuration["table"]))
-  cur.execute(select_statement)
+  cur.execute(select_statement, (,))
   print(cur.fetchall())
   cur.close()
   dbconn.close()
